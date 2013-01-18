@@ -54,6 +54,9 @@ def signup(request, template="accounts/account_signup.html"):
             info(request, _("A verification email has been sent with "
                             "a link for activating your account."))
             return redirect(request.GET.get("next", "/"))
+        elif not settings.ACCOUNTS_APPROVAL_REQUIRED:
+            send_verification_mail(request, admin, "approve_account")
+            return redirect(request.GET.get("next", "/"))
         else:
             info(request, _("Successfully signed up"))
             auth_login(request, new_user)
@@ -61,6 +64,29 @@ def signup(request, template="accounts/account_signup.html"):
     context = {"form": form, "title": _("Signup")}
     return render(request, template, context)
 
+def approve_account(request, uidb36=None, token=None):
+    user = authenticate(uidb36=uidb36, token=token, is_active=False)
+
+#     """
+#     redirecting to the URL they tried to access when signing up.
+#     """
+    user = authenticate(uidb36=uidb36, token=token, is_active=False)
+    if user is not None:
+        if not settings.ACCOUNTS_APPROVAL_REQUIRED:
+            user.is_active = True
+            user.save()
+            auth_login(request, user)
+            info(request, _("Successfully signed up"))
+            return login_redirect(request)
+        else:
+            user.is_active = False
+            user.save()
+            auth_login(request, user)
+            info(request, _("Awaiting account approval"))
+            return login_redirect(request)
+    else:
+        error(request, _("The link you clicked is no longer valid."))
+        return redirect("/")
 
 def signup_verify(request, uidb36=None, token=None):
     """

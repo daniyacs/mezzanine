@@ -461,6 +461,7 @@ register_setting(
     description=_("Sequence of setting names available within templates."),
     editable=False,
     default=(
+        "ACCOUNTS_APPROVAL_REQUIRED",
         "ACCOUNTS_VERIFICATION_REQUIRED", "ADMIN_MEDIA_PREFIX",
         "BLOG_BITLY_USER", "BLOG_BITLY_KEY", "BLOG_USE_FEATURED_IMAGE",
         "COMMENTS_DISQUS_SHORTNAME", "COMMENTS_NUM_LATEST",

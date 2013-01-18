@@ -9,6 +9,8 @@ SIGNUP_URL = getattr(settings, "SIGNUP_URL",
                      "/%s/signup/" % ACCOUNT_URL.strip("/"))
 SIGNUP_VERIFY_URL = getattr(settings, "SIGNUP_VERIFY_URL",
                             "/%s/verify/" % ACCOUNT_URL.strip("/"))
+ADMIN_APPROVAL_URL = getattr(settings, "ADMIN_APPROVAL_URL",
+                            "/%s/approval/" % ACCOUNT_URL.strip("/"))
 LOGIN_URL = settings.LOGIN_URL
 LOGOUT_URL = settings.LOGOUT_URL
 PROFILE_URL = getattr(settings, "PROFILE_URL", "/users/")

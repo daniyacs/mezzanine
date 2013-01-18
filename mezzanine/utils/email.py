@@ -56,3 +56,36 @@ def send_verification_mail(request, user, verification_type):
                        "email/%s" % verification_type,
                        settings.DEFAULT_FROM_EMAIL, user.email,
                        context=context, fail_silently=settings.DEBUG)
+
+def send_approval_mail(request, user, approval_type):
+    """
+    Sends an email with an approval link to admin(s) when
+    ``ACCOUNTS_APPROVAL_REQUIRED`` is ```True`` and they have first
+    signed up.
+    The ``approval_type`` arg is both the name of the urlpattern for
+    the approval link, as well as the names of the email templates
+    to use.
+    """
+    approve_url = reverse(approval_type, kwargs={
+        "uidb36": int_to_base36(user.id),
+        "token": default_token_generator.make_token(user),
+    }) + "?next=" + request.GET.get("next", "/")
+    context = {
+        "request": request,
+        "user": user,
+        "approve_url": approve_url,
+    }
+
+    # get the administrator emails
+    from django.contrib.auth.models import User
+    admins = User.objects.filter(is_staff=True)
+    email = ''
+    for admin in admins:
+        email = ', '.join(email, admin.email)
+
+    subject_template = "email/%s_subject.txt" % approval_type
+    subject = loader.get_template(subject_template).render(Context(context))
+    send_mail_template("".join(subject.splitlines()),
+                       "email/%s" % approval_type,
+                       settings.DEFAULT_FROM_EMAIL, email,
+                       context=context, fail_silently=settings.DEBUG)

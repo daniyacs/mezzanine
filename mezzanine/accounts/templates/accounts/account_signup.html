@@ -9,6 +9,9 @@
     {{ block.super }}
     {% if settings.ACCOUNTS_VERIFICATION_REQUIRED %}
     <p>{% trans "After signing up, you'll receive an email with a link you need to click, in order to activate your account." %}</p>
+        {% if settings.ACCOUNTS_APPROVAL_REQUIRED %}
+    <p>{% trans "Once activated, your account will need to be approved by an administrator." %}</p>
+        {% endif %}
     {% endif %}
 {% endif %}
 

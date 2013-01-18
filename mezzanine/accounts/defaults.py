@@ -52,5 +52,12 @@ register_setting(
         "sent an email with a verification link, which they must click to "
         "enable their account."),
     editable=False,
+    default=True,
+)
+
+register_setting(
+    name="ACCOUNTS_APPROVAL_REQUIRED",
+    description=_("If `True``, when users verify their email, an admin must approve them in order to be able to use the forum."),
+    editable=False,
     default=False,
 )
